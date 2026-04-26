@@ -4,6 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    path('', RedirectView.as_view(url='/login/')),
     path('admin/', admin.site.urls),
     path('', include('management.urls')),
     path('', include('accounts.urls')),

@@ -3,6 +3,7 @@ from django.urls import path, include
 from management.views import dashboard, view_status, apply_leave
 
 urlpatterns = [
+    path('', RedirectView.as_view(url='/login/')),
     path('admin/', admin.site.urls),
     path('', include('management.urls')),
     path('', include('accounts.urls')),
