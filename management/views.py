@@ -6,7 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from .models import LeaveApplication, LeaveType, EmployeeProfile
 from datetime import date, timedelta, datetime
-from .forms import RegisterForm
+from accounts.forms import RegisterForm
 
 # ==========================
 # FUNGSI KIRA HARI BEKERJA
