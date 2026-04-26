@@ -1,9 +1,10 @@
 from django.contrib import admin
 from django.urls import path, include
 from management.views import dashboard, view_status, apply_leave
+from django.shortcuts import redirect
 
 urlpatterns = [
-    path('', RedirectView.as_view(url='/login/')),
+    path('', lambda request: redirect('login')),
     path('admin/', admin.site.urls),
     path('', include('management.urls')),
     path('', include('accounts.urls')),
