@@ -24,7 +24,6 @@
     font-family: 'Segoe UI', sans-serif;
 }
 
-    /* ── wrapper sama lebar dengan login ── */
     .register-wrapper {
         width: 100%;
         max-width: 420px;
@@ -47,7 +46,6 @@
     .brand-title { color: #ffffff; font-size: 22px; font-weight: 700; text-align: center; margin-bottom: 4px; }
     .brand-subtitle { color: #e3f2fd; font-size: 13px; text-align: center; margin-bottom: 24px; }
 
-    /* ── kotak putih sama saiz dengan login ── */
     .register-card {
         background: #ffffff;
         border: none;
@@ -81,7 +79,6 @@
 
     .tab-btn:hover { color: #1565c0; background: #f0f4f8; }
 
-    /* ── padding form sama dengan login ── */
     .form-body { padding: 24px; }
 
     .form-hint { color: #546e7a; font-size: 13px; margin-bottom: 20px; }
@@ -135,7 +132,6 @@
         gap: 8px;
     }
 
-    /* ── butang sama style dengan login ── */
     .btn-register {
         width: 100%;
         padding: 12px;
@@ -203,10 +199,26 @@
                     <input type="email" name="email" class="input-field"
                            placeholder="Emel"
                            value="{{ form.email.value|default:'' }}">
-                    <input type="password" name="password1" class="input-field"
-                           placeholder="Kata laluan" required>
-                    <input type="password" name="password2" class="input-field"
-                           placeholder="Sahkan kata laluan" required>
+
+                    <div style="position:relative; margin-bottom:12px;">
+                        <input type="password" name="password1" id="regPassword1" class="input-field"
+                               placeholder="Kata laluan" required style="margin-bottom:0; padding-right:44px;">
+                        <button type="button" onclick="togglePassword('regPassword1', this)"
+                                style="position:absolute; right:12px; top:50%; transform:translateY(-50%);
+                                       background:none; border:none; color:#90a4ae; cursor:pointer; padding:0;">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+
+                    <div style="position:relative; margin-bottom:12px;">
+                        <input type="password" name="password2" id="regPassword2" class="input-field"
+                               placeholder="Sahkan kata laluan" required style="margin-bottom:0; padding-right:44px;">
+                        <button type="button" onclick="togglePassword('regPassword2', this)"
+                                style="position:absolute; right:12px; top:50%; transform:translateY(-50%);
+                                       background:none; border:none; color:#90a4ae; cursor:pointer; padding:0;">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
 
                     <div class="info-box">
                         <i class="bi bi-info-circle"></i>
@@ -228,5 +240,18 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    function togglePassword(inputId, btn) {
+        const input = document.getElementById(inputId);
+        const icon = btn.querySelector('i');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.replace('bi-eye', 'bi-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.replace('bi-eye-slash', 'bi-eye');
+        }
+    }
+    </script>
 </body>
 </html>

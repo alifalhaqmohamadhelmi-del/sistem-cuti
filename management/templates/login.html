@@ -144,7 +144,7 @@
     }
 
     .login-footer { text-align: center; color: #e3f2fd; font-size: 12px; margin-top: 20px; }
-</style>
+    </style>
 </head>
 <body>
     <div class="login-wrapper">
@@ -179,8 +179,16 @@
                     {% csrf_token %}
                     <input type="text" name="username" class="input-field"
                            placeholder="Nama pengguna" required>
-                    <input type="password" name="password" class="input-field"
-                           placeholder="Kata laluan" required>
+
+                    <div style="position:relative; margin-bottom:12px;">
+                        <input type="password" name="password" id="loginPassword" class="input-field"
+                               placeholder="Kata laluan" required style="margin-bottom:0; padding-right:44px;">
+                        <button type="button" onclick="togglePassword('loginPassword', this)"
+                                style="position:absolute; right:12px; top:50%; transform:translateY(-50%);
+                                       background:none; border:none; color:#90a4ae; cursor:pointer; padding:0;">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
 
                     <div class="form-options">
                         <label class="remember-label">
@@ -204,5 +212,18 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    function togglePassword(inputId, btn) {
+        const input = document.getElementById(inputId);
+        const icon = btn.querySelector('i');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.replace('bi-eye', 'bi-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.replace('bi-eye-slash', 'bi-eye');
+        }
+    }
+    </script>
 </body>
 </html>
