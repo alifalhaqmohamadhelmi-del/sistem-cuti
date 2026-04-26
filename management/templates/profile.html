@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div style="max-width: 600px; margin: 0 auto;">
+    <div class="card p-4 mb-3">
+
+        <!-- Avatar & Upload -->
+        <div class="d-flex align-items-center gap-3 mb-4">
+
+            <!-- Gambar Profile -->
+            <div class="position-relative" style="cursor:pointer;" onclick="document.getElementById('uploadInput').click()">
+                {% if profile.profile_picture %}
+                    <img src="{{ profile.profile_picture.url }}"
+                         alt="Profile"
+                         class="rounded-circle"
+                         style="width:80px; height:80px; object-fit:cover; border: 3px solid #1565c0;">
+                {% else %}
+                    <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold"
+                         style="width:80px; height:80px; background: linear-gradient(135deg,#1565c0,#42a5f5); font-size:28px; border: 3px solid #1565c0;">
+                        {{ request.user.username|slice:":1"|upper }}
+                    </div>
+                {% endif %}
+
+                <!-- Overlay edit icon -->
+                <div class="position-absolute bottom-0 end-0 rounded-circle d-flex align-items-center justify-content-center"
+                     style="width:26px; height:26px; background:#1565c0; border: 2px solid #fff;">
+                    <i class="bi bi-camera-fill text-white" style="font-size:11px;"></i>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="fw-bold mb-0" style="color:#1565c0;">{{ request.user.username }}</h4>
+                <small class="text-muted">{{ request.user.email|default:"Tiada emel" }}</small>
+                <br>
+                <small class="text-muted" style="font-size:11px;">
+                    <i class="bi bi-camera"></i> Klik gambar untuk tukar foto
+                </small>
+            </div>
+        </div>
+
+        <!-- Form upload gambar (hidden) -->
+        <form method="POST" enctype="multipart/form-data" id="uploadForm">
+            {% csrf_token %}
+            <input type="file" id="uploadInput" name="profile_picture"
+                   accept="image/*" style="display:none;"
+                   onchange="document.getElementById('uploadForm').submit()">
+        </form>
+
+        <hr style="border-color:#e3f2fd;">
+
+        <!-- Info Profil -->
+        <div class="row g-3">
+            <div class="col-6">
+                <small class="text-muted">Nama Pengguna</small>
+                <p class="fw-bold mb-0" style="color:#1a1a2e;">{{ request.user.username }}</p>
+            </div>
+            <div class="col-6">
+                <small class="text-muted">Emel</small>
+                <p class="fw-bold mb-0" style="color:#1a1a2e;">{{ request.user.email|default:"Tiada emel" }}</p>
+            </div>
+            <div class="col-6">
+                <small class="text-muted">Jawatan</small>
+                <p class="fw-bold mb-0" style="color:#1a1a2e;">
+                    {% if profile.position %}{{ profile.position }}{% else %}<span class="text-muted">–</span>{% endif %}
+                </p>
+            </div>
+            <div class="col-6">
+                <small class="text-muted">Jabatan</small>
+                <p class="fw-bold mb-0" style="color:#1a1a2e;">
+                    {% if profile.department %}{{ profile.department }}{% else %}<span class="text-muted">–</span>{% endif %}
+                </p>
+            </div>
+            <div class="col-6">
+                <small class="text-muted">Kuota Cuti Tahunan</small>
+                <p class="fw-bold mb-0" style="color:#1565c0;">{{ profile.total_leave_quota }} hari</p>
+            </div>
+            <div class="col-6">
+                <small class="text-muted">Tarikh Daftar</small>
+                <p class="fw-bold mb-0" style="color:#1a1a2e;">{{ request.user.date_joined|date:"d M Y" }}</p>
+            </div>
+        </div>
+
+        <hr style="border-color:#e3f2fd;">
+
+        <!-- Butang -->
+        <div class="d-flex gap-2">
+            <a href="{% url 'dashboard' %}" class="btn btn-primary fw-bold px-4">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+            <a href="{% url 'logout' %}" class="btn fw-bold px-4"
+               style="background:#ffebee; color:#e53935; border:1px solid #ffcdd2;">
+                <i class="bi bi-box-arrow-right"></i> Log Keluar
+            </a>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

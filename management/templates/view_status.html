@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+.border-approved { border-left: 4px solid #34a853 !important; }
+.border-rejected { border-left: 4px solid #e53935 !important; }
+.border-pending  { border-left: 4px solid #f5a623 !important; }
+</style>
+
+<div class="card p-4">
+    <h4 class="mb-4 fw-bold" style="color:#1565c0;">Status Permohonan Cuti Saya</h4>
+
+    {% for leave in my_leaves %}
+    <div class="card mb-3 p-4 position-relative
+        {% if leave.status == 'Approved' %}border-approved
+        {% elif leave.status == 'Rejected' %}border-rejected
+        {% else %}border-pending{% endif %}">
+
+        <!-- Badge Status -->
+        <div class="position-absolute top-0 end-0 m-3">
+            {% if leave.status == 'Approved' %}
+                <span class="badge px-2 py-2" style="background:#34a853; font-size:11px;">Diluluskan</span>
+            {% elif leave.status == 'Rejected' %}
+                <span class="badge px-2 py-2" style="background:#e53935; font-size:11px;">Ditolak</span>
+            {% else %}
+                <span class="badge px-2 py-2" style="background:#f5a623; color:#1a1a2e; font-size:11px;">Menunggu</span>
+            {% endif %}
+        </div>
+
+        <!-- Tajuk -->
+        <h5 class="fw-bold mb-3 pe-5" style="color:#1565c0;">{{ leave.leave_type.name }}</h5>
+
+        <!-- Tarikh & Jumlah -->
+        <div class="row g-2 mb-3">
+            <div class="col-6">
+                <small class="text-muted d-block">Tarikh Mula</small>
+                <p class="fw-bold mb-0" style="font-size:14px;">{{ leave.start_date|date:"d M Y" }}</p>
+            </div>
+            <div class="col-6">
+                <small class="text-muted d-block">Tarikh Tamat</small>
+                <p class="fw-bold mb-0" style="font-size:14px;">{{ leave.end_date|date:"d M Y" }}</p>
+            </div>
+            <div class="col-6">
+                <small class="text-muted d-block">Jumlah Hari</small>
+                <p class="fw-bold mb-0" style="font-size:14px;">{{ leave.jumlah_hari }} hari</p>
+            </div>
+        </div>
+
+        <!-- Sebab Cuti -->
+        <div class="mb-3">
+            <small class="text-muted d-block">Sebab Cuti</small>
+            <p class="fw-bold mb-0" style="font-size:14px;">
+                {% if leave.reason %}{{ leave.reason }}{% else %}<span class="text-muted">–</span>{% endif %}
+            </p>
+        </div>
+
+        <!-- Ulasan Supervisor -->
+        <div class="mb-3 p-3 rounded" style="background:#f0f4f8;">
+            <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+                <small class="text-muted">Ulasan Supervisor</small>
+                {% if leave.supervisor_status == 'Setuju' %}
+                    <span class="badge" style="background:#34a853; font-size:10px;">✓ Setuju</span>
+                {% elif leave.supervisor_status == 'Tidak Setuju' %}
+                    <span class="badge" style="background:#e53935; font-size:10px;">✗ Tidak Setuju</span>
+                {% else %}
+                    <span class="badge" style="background:#f5a623; color:#1a1a2e; font-size:10px;">Belum Disemak</span>
+                {% endif %}
+            </div>
+            <p class="fw-bold mb-0" style="font-size:14px;">
+                {% if leave.supervisor_comment %}
+                    <span style="color:#1565c0;">{{ leave.supervisor_comment }}</span>
+                {% else %}
+                    <span class="text-muted">–</span>
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- Sebab HR -->
+        <div>
+            <small class="text-muted d-block">Sebab HR</small>
+            <p class="fw-bold mb-0" style="font-size:14px;">
+                {% if leave.hr_comment %}
+                    <span style="color:#e53935;">{{ leave.hr_comment }}</span>
+                {% else %}
+                    <span class="text-muted">–</span>
+                {% endif %}
+            </p>
+        </div>
+
+    </div>
+    {% empty %}
+    <div class="text-center text-muted p-4">
+        <i class="bi bi-inbox" style="font-size:48px; color:#cfd8e3;"></i>
+        <p class="mt-2">Tiada permohonan cuti.</p>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

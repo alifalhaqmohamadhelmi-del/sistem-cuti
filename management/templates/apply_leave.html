@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card p-4">
+    <h2 class="text-center mb-4 text-primary">Permohonan Cuti Baru</h2>
+    
+    <form method="POST" enctype="multipart/form-data" id="leaveForm">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label class="form-label">Jenis Cuti</label>
+            <select name="leave_type" id="leave_type" class="form-select" required>
+                <option value="" selected disabled>Pilih Jenis Cuti</option>
+                {% for type in leave_types %}
+                    <option value="{{ type.id }}" data-name="{{ type.name }}">{{ type.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Tarikh Mula</label>
+                <input type="date" name="start_date" id="start_date" class="form-control" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Tarikh Tamat</label>
+                <input type="date" name="end_date" id="end_date" class="form-control" required>
+            </div>
+        </div>
+
+        <!-- Paparan jumlah hari bekerja -->
+        <div id="jumlah_hari_box" class="alert alert-info mt-2 mb-3" style="display:none;">
+            <i class="bi bi-calendar-check"></i>
+            <strong>Jumlah hari cuti (tidak termasuk Sabtu & Ahad): 
+                <span id="hari_count">0</span> hari
+            </strong>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Sebab Cuti</label>
+            <textarea name="reason" class="form-control" rows="3" placeholder="Sila berikan alasan..."></textarea>
+        </div>
+
+        <!-- Kotak MC -->
+        <div class="mb-4" id="mc_box">
+            <label class="form-label" id="mc_label">
+                Sijil Sakit (MC) <small class="text-muted">(Jika ada)</small>
+            </label>
+            <input type="file" name="medical_certificate" id="medical_certificate" 
+                   class="form-control" accept=".pdf,.jpg,.jpeg,.png">
+            <div id="mc_warning" class="text-danger mt-1" style="display:none;">
+                ⚠️ Sijil Sakit (MC) wajib dilampirkan untuk cuti sakit!
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 py-2">Hantar Permohonan</button>
+    </form>
+</div>
+
+<script>
+// Semak jenis cuti bila berubah
+document.getElementById('leave_type').addEventListener('change', function() {
+    const selectedOption = this.options[this.selectedIndex];
+    const jenisCuti = selectedOption.getAttribute('data-name').toLowerCase();
+    const mcInput = document.getElementById('medical_certificate');
+    const mcLabel = document.getElementById('mc_label');
+    const mcWarning = document.getElementById('mc_warning');
+    const mcBox = document.getElementById('mc_box');
+
+    // Semak kalau jenis cuti mengandungi perkataan 'sakit' atau 'mc'
+    if (jenisCuti.includes('sakit') || jenisCuti.includes('mc')) {
+        // Wajibkan MC
+        mcInput.required = true;
+        mcLabel.innerHTML = 'Sijil Sakit (MC) <span class="text-danger">*</span> <small class="text-danger">(Wajib untuk cuti sakit)</small>';
+        mcBox.classList.add('border', 'border-danger', 'rounded', 'p-3');
+        mcWarning.style.display = 'block';
+    } else {
+        // MC tidak wajib
+        mcInput.required = false;
+        mcLabel.innerHTML = 'Sijil Sakit (MC) <small class="text-muted">(Jika ada)</small>';
+        mcBox.classList.remove('border', 'border-danger', 'rounded', 'p-3');
+        mcWarning.style.display = 'none';
+    }
+});
+
+// Kira hari bekerja
+function kiraHariBekerja() {
+    const start = document.getElementById('start_date').value;
+    const end = document.getElementById('end_date').value;
+
+    if (start && end) {
+        let startDate = new Date(start);
+        let endDate = new Date(end);
+
+        if (endDate < startDate) {
+            alert('Tarikh tamat tidak boleh lebih awal dari tarikh mula!');
+            document.getElementById('end_date').value = '';
+            document.getElementById('jumlah_hari_box').style.display = 'none';
+            return;
+        }
+
+        let jumlah = 0;
+        let current = new Date(startDate);
+
+        while (current <= endDate) {
+            const hari = current.getDay();
+            if (hari !== 0 && hari !== 6) {
+                jumlah++;
+            }
+            current.setDate(current.getDate() + 1);
+        }
+
+        document.getElementById('hari_count').textContent = jumlah;
+        document.getElementById('jumlah_hari_box').style.display = 'block';
+    }
+}
+
+document.getElementById('start_date').addEventListener('change', kiraHariBekerja);
+document.getElementById('end_date').addEventListener('change', kiraHariBekerja);
+</script>
+
+{% endblock %}

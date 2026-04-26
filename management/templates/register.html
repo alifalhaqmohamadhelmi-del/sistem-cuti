@@ -1,0 +1,232 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Cuti — Daftar Akaun</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+    <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+    background-image: url("{% static 'images/hr-system-background.svg' %}");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+    /* ── wrapper sama lebar dengan login ── */
+    .register-wrapper {
+        width: 100%;
+        max-width: 420px;
+        padding: 20px;
+    }
+
+    .brand-icon {
+        width: 64px;
+        height: 64px;
+        background: #ffffff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+
+    .brand-icon i { font-size: 28px; color: #1565c0; }
+    .brand-title { color: #ffffff; font-size: 22px; font-weight: 700; text-align: center; margin-bottom: 4px; }
+    .brand-subtitle { color: #e3f2fd; font-size: 13px; text-align: center; margin-bottom: 24px; }
+
+    /* ── kotak putih sama saiz dengan login ── */
+    .register-card {
+        background: #ffffff;
+        border: none;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+        width: 100%;
+    }
+
+    .tab-header { display: flex; border-bottom: 1px solid #e3f2fd; }
+
+    .tab-btn {
+        flex: 1;
+        padding: 14px;
+        background: transparent;
+        border: none;
+        color: #90a4ae;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        text-align: center;
+        display: block;
+    }
+
+    .tab-btn.active {
+        color: #1565c0;
+        border-bottom: 2px solid #1565c0;
+    }
+
+    .tab-btn:hover { color: #1565c0; background: #f0f4f8; }
+
+    /* ── padding form sama dengan login ── */
+    .form-body { padding: 24px; }
+
+    .form-hint { color: #546e7a; font-size: 13px; margin-bottom: 20px; }
+
+    .input-field {
+        width: 100%;
+        padding: 12px 16px;
+        background: #f8faff;
+        border: 1px solid #cfd8e3;
+        border-radius: 8px;
+        color: #1a1a2e;
+        font-size: 14px;
+        margin-bottom: 12px;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+
+    .input-field::placeholder { color: #90a4ae; }
+
+    .input-field:focus {
+        border-color: #1565c0;
+        box-shadow: 0 0 0 3px rgba(21,101,192,0.15);
+        background: #ffffff;
+    }
+
+    .info-box {
+        background: #e3f2fd;
+        border: 1px solid #90caf9;
+        border-radius: 8px;
+        padding: 10px 14px;
+        color: #1565c0;
+        font-size: 12px;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .info-box i { flex-shrink: 0; margin-top: 1px; }
+
+    .error-box {
+        background: #ffebee;
+        border: 1px solid #e53935;
+        border-radius: 8px;
+        padding: 10px 14px;
+        color: #c62828;
+        font-size: 13px;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    /* ── butang sama style dengan login ── */
+    .btn-register {
+        width: 100%;
+        padding: 12px;
+        background: linear-gradient(135deg, #1565c0, #42a5f5);
+        border: none;
+        border-radius: 8px;
+        color: #ffffff;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        margin-bottom: 16px;
+        transition: opacity 0.2s;
+    }
+
+    .btn-register:hover { opacity: 0.9; }
+
+    .login-link { text-align: center; color: #546e7a; font-size: 13px; }
+    .login-link a { color: #1565c0; text-decoration: none; font-weight: 600; }
+    .login-link a:hover { color: #0d47a1; }
+
+    .register-footer { text-align: center; color: #e3f2fd; font-size: 12px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="register-wrapper">
+
+        <!-- Brand -->
+        <div class="brand-icon">
+            <i class="bi bi-calendar2-heart"></i>
+        </div>
+        <p class="brand-title">Sistem Cuti</p>
+        <p class="brand-subtitle">Pengurusan Cuti & Sakit Pekerja</p>
+
+        <!-- Kotak putih -->
+        <div class="register-card">
+
+            <!-- Tab -->
+            <div class="tab-header">
+                <a href="{% url 'login' %}" class="tab-btn">Log Masuk</a>
+                <span class="tab-btn active">Daftar Akaun</span>
+            </div>
+
+            <!-- Form -->
+            <div class="form-body">
+                <p class="form-hint">Isikan maklumat untuk membuat akaun baru.</p>
+
+                {% if form.errors %}
+                <div class="error-box">
+                    <i class="bi bi-exclamation-circle"></i>
+                    <div>
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                {{ error }}<br>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="text" name="username" class="input-field"
+                           placeholder="Nama penuh" required
+                           value="{{ form.username.value|default:'' }}">
+                    <input type="email" name="email" class="input-field"
+                           placeholder="Emel"
+                           value="{{ form.email.value|default:'' }}">
+                    <input type="password" name="password1" class="input-field"
+                           placeholder="Kata laluan" required>
+                    <input type="password" name="password2" class="input-field"
+                           placeholder="Sahkan kata laluan" required>
+
+                    <div class="info-box">
+                        <i class="bi bi-info-circle"></i>
+                        Kata laluan mestilah sekurang-kurangnya 8 aksara dengan huruf besar dan nombor.
+                    </div>
+
+                    <button type="submit" class="btn-register">Buat Akaun</button>
+                </form>
+
+                <p class="login-link">
+                    Sudah ada akaun? <a href="{% url 'login' %}">Log masuk di sini</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <p class="register-footer">© 2026 Sistem Pengurusan Pekerja</p>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

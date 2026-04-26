@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="card p-4">
+    <h4 class="mb-4 fw-bold" style="color:#1565c0;">Senarai Menunggu Kelulusan (HR)</h4>
+
+    {% for app in applications %}
+    <div class="card mb-4 p-4" style="border-left: 4px solid #1565c0;">
+
+        <!-- Header -->
+        <div class="d-flex align-items-center mb-3 gap-3">
+            <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold flex-shrink-0"
+                 style="width:48px; height:48px; background:#1565c0; font-size:16px;">
+                {{ app.employee.username|slice:":2"|upper }}
+            </div>
+            <div>
+                <p class="mb-0 fw-bold" style="color:#1a1a2e; font-size:15px;">{{ app.employee.username }}</p>
+                <small class="text-muted">{{ app.leave_type.name }}</small>
+            </div>
+        </div>
+
+        <hr style="border-color:#e3f2fd;">
+
+        <!-- Info Grid -->
+        <div class="row g-3 mb-3">
+            <div class="col-6">
+                <small class="text-muted d-block">Tarikh Mula</small>
+                <p class="fw-bold mb-0" style="font-size:14px;">{{ app.start_date|date:"d M Y" }}</p>
+            </div>
+            <div class="col-6">
+                <small class="text-muted d-block">Tarikh Tamat</small>
+                <p class="fw-bold mb-0" style="font-size:14px;">{{ app.end_date|date:"d M Y" }}</p>
+            </div>
+            <div class="col-6">
+                <small class="text-muted d-block">Jumlah Hari</small>
+                <p class="fw-bold mb-0" style="font-size:14px;">{{ app.jumlah_hari }} hari</p>
+            </div>
+            <div class="col-6">
+                <small class="text-muted d-block">Sijil MC</small>
+                <p class="fw-bold mb-0" style="font-size:14px;">
+                    {% if app.medical_certificate %}
+                        <a href="{{ app.medical_certificate.url }}" target="_blank" style="color:#1565c0;">Ada</a>
+                    {% else %}
+                        <span class="text-muted">Tiada</span>
+                    {% endif %}
+                </p>
+            </div>
+            <div class="col-12">
+                <small class="text-muted d-block">Sebab Cuti</small>
+                <p class="fw-bold mb-0" style="font-size:14px;">{{ app.reason|default:"–" }}</p>
+            </div>
+        </div>
+
+        <!-- Ulasan Supervisor -->
+        <div class="mb-3 p-3 rounded" style="background:#f0f4f8; border-left:3px solid #1565c0;">
+            <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+                <small class="text-muted fw-bold">Ulasan Supervisor:</small>
+                {% if app.supervisor_status == 'Setuju' %}
+                    <span class="badge" style="background:#34a853; font-size:10px;">✓ Setuju</span>
+                {% elif app.supervisor_status == 'Tidak Setuju' %}
+                    <span class="badge" style="background:#e53935; font-size:10px;">✗ Tidak Setuju</span>
+                {% else %}
+                    <span class="badge" style="background:#f5a623; color:#1a1a2e; font-size:10px;">Belum Disemak</span>
+                {% endif %}
+            </div>
+            <p class="fw-bold mb-0" style="color:#1565c0; font-size:14px;">
+                {{ app.supervisor_comment|default:"Tiada ulasan supervisor" }}
+            </p>
+        </div>
+
+        <!-- Butang Lulus & Tolak -->
+        <div class="d-flex gap-2">
+            <form method="POST" action="{% url 'approve_leave' app.id %}" class="flex-fill">
+                {% csrf_token %}
+                <input type="hidden" name="hr_comment" value="Permohonan diluluskan.">
+                <button type="submit" class="btn w-100 fw-bold text-white py-2"
+                        style="background:#34a853; border-radius:8px;">
+                    <i class="bi bi-check-circle"></i> Lulus
+                </button>
+            </form>
+            <button type="button" class="btn fw-bold text-white flex-fill py-2"
+                    style="background:#e53935; border-radius:8px;"
+                    data-bs-toggle="modal"
+                    data-bs-target="#rejectModal{{ app.id }}">
+                <i class="bi bi-x-circle"></i> Tolak
+            </button>
+        </div>
+
+        <!-- Modal Reject -->
+        <div class="modal fade" id="rejectModal{{ app.id }}" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style="border-radius:14px;">
+                    <div class="modal-header" style="background: linear-gradient(135deg,#1565c0,#42a5f5);">
+                        <div>
+                            <h5 class="modal-title text-white fw-bold mb-0">Sebab Penolakan</h5>
+                            <small class="text-white opacity-75">
+                                {{ app.employee.username }} — {{ app.leave_type.name }}
+                            </small>
+                        </div>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form method="POST" action="{% url 'reject_leave' app.id %}">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            <label class="form-label text-muted">Sebab Penolakan</label>
+                            <textarea name="hr_comment" class="form-control" rows="4"
+                                      placeholder="Tulis sebab penolakan di sini..."
+                                      required style="border-radius:8px;"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn fw-bold flex-fill"
+                                    style="background:#f0f4f8; color:#1565c0; border:1px solid #cfd8e3; border-radius:8px;"
+                                    data-bs-dismiss="modal">
+                                Batal
+                            </button>
+                            <button type="submit" class="btn fw-bold text-white flex-fill"
+                                    style="background:#e53935; border-radius:8px;">
+                                Hantar & Tolak
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    {% empty %}
+    <div class="text-center text-muted p-4">
+        <i class="bi bi-inbox" style="font-size:48px; color:#cfd8e3;"></i>
+        <p class="mt-2">Tiada permohonan menunggu kelulusan.</p>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
