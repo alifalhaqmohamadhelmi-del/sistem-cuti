@@ -6,6 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from .models import LeaveApplication, LeaveType, EmployeeProfile
 from datetime import date, timedelta, datetime
+from .forms import RegisterForm
 
 # ==========================
 # FUNGSI KIRA HARI BEKERJA
@@ -220,7 +221,7 @@ def login_view(request):
     return render(request, 'login.html', {'error': error})
 
 def register_view(request):
-    form = UserCreationForm(request.POST or None)
+    form = RegisterForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
         form.save()
         return redirect('login')
